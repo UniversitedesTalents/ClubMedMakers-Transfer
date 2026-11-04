@@ -13,7 +13,7 @@ function row(role,text,error=false){
 }
 function typing(){const wrap=element('div','row assistant-row');wrap.id='typing-row';wrap.innerHTML='<span class="mini-mark" aria-hidden="true">CM</span><div class="typing" aria-label="Searching"><i></i><i></i><i></i></div>';conversation.append(wrap);return wrap;}
 function setBusy(busy){input.disabled=busy;form.querySelector('button').disabled=busy;conversation.setAttribute('aria-busy',String(busy));}
-function setMode(mode){testBadge.hidden=mode==='live';}
+function setMode(mode){if(testBadge)testBadge.hidden=mode==='live';}
 function scrollLatest(){conversation.scrollTo({top:conversation.scrollHeight,behavior:'smooth'});}
 async function api(path,body){
  const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),15000);
