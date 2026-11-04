@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4edea" />
+    <meta name="description" content="Find your personal transfer information for Club Med Makers in Opio." />
+    <title>Find Your Transfer · Opio 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;1,6..72,500&display=swap" rel="stylesheet" />
+    <link rel="icon" href="/assets/opio-club-med.png" type="image/png" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <main class="page-shell">
+      <div class="brand-ghost" aria-hidden="true">
+        <img src="/assets/opio-club-med.png" alt="" />
+      </div>
+
+      <header class="brand-bar" aria-label="Club Med Makers Opio 2026">
+        <img class="opio-mark" src="/assets/opio-club-med.png" alt="Club Med Opio" />
+        <img class="cmm-mark" src="/assets/club-med-makers.png" alt="Club Med Makers" />
+      </header>
+
+      <section class="intro">
+        <p class="eyebrow">Your personal convention guide</p>
+        <h1>Find your <em>transfer.</em></h1>
+        <p class="intro-copy">Enter your first name, last name, or both to find your transfer details.</p>
+      </section>
+
+      <section class="assistant" aria-label="Find your transfer assistant">
+        <div class="assistant-head">
+          <div class="guide-identity">
+            <span class="guide-monogram" aria-hidden="true">CM</span>
+            <span>
+              <strong>Opio Guide</strong>
+              <small><i></i> Ready to help</small>
+            </span>
+          </div>
+          <span class="edition">2026</span>
+        </div>
+
+        <div class="conversation" id="conversation" aria-live="polite" aria-atomic="false">
+          <div class="row assistant-row">
+            <span class="mini-mark" aria-hidden="true">CM</span>
+            <div class="bubble assistant-bubble">
+              <p>Hi! Let’s find your transfer.</p>
+              <p>What’s your first or last name?</p>
+            </div>
+          </div>
+        </div>
+
+        <form class="search-box" id="search-form">
+          <label class="sr-only" for="participant-name">First name, last name, or full name</label>
+          <input id="participant-name" name="name" type="search" inputmode="text" autocomplete="name" maxlength="160" placeholder="First name, last name, or both" required />
+          <button type="submit" aria-label="Find my transfer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" /></svg>
+          </button>
+        </form>
+
+        <button class="again" id="search-again" type="button" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11a8 8 0 1 1 2.3 6M4 17v-6h6" /></svg>
+          Search another name
+        </button>
+
+        <p class="privacy"><span aria-hidden="true">✓</span> Search by name. Only your own transfer details are shown.</p>
+        <p class="test-badge" id="test-badge">Test version · Details may change</p>
+      </section>
+
+      <a class="hub-link" href="https://boostlearning.my.canva.site/hub-clubmedmakers-2026">
+        <span aria-hidden="true">←</span>
+        <span>Back to HUB</span>
+      </a>
+
+      <footer>Club Med Makers · Opio 2026</footer>
+    </main>
+  </body>
+</html>
