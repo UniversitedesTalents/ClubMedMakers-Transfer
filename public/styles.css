@@ -262,11 +262,12 @@ footer { margin-top: 20px; color: rgba(30,35,70,.43); font-size: .6rem; font-wei
 .conversation:has(.result) {max-height:600px;}
 @media(min-width:800px){
  .intro h1 {font-size:clamp(4.3rem,7.8vw,6.15rem);}
- .page-shell {grid-template-columns:minmax(0,.95fr) minmax(390px,.85fr);column-gap:clamp(30px,5vw,70px);}
+ .page-shell {grid-template-columns:minmax(0,.85fr) minmax(390px,1fr);column-gap:clamp(24px,3vw,40px);}
  .page-shell:has(.result) {min-height:100svh;padding-top:35px;}
- .assistant {margin:32px 0;}
+ .assistant {width:100%;max-width:430px;margin:32px 0;justify-self:start;}
 }
 @media(max-width:799px){
+ .assistant {width:100%;max-width:460px;margin-inline:auto;}
  .intro h1 em {display:inline;}
  .name-choices {padding-left:0;}
  .conversation:has(.result) {max-height:none;}
