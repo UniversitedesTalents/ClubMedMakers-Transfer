@@ -34,7 +34,7 @@ function transferCard(entry){
  const details=element('div','transfer-details');
  details.append(detail('Arrival location',entry.arrivalLocation||'To be confirmed'));
  if(entry.flightTrain)details.append(detail('Flight / train',entry.flightTrain));
- details.append(detail('Meeting point',entry.meetingPoint||'Meeting point details will be shared shortly.'));
+ if(entry.meetingPoint?.trim())details.append(detail('Meeting point',entry.meetingPoint));
  section.append(details);
  const paid=entry.paymentStatus==='Pay driver - expense claim';
  const covered=entry.paymentStatus==='Covered - no payment required';
@@ -54,19 +54,19 @@ function showResult(data){
  for(const entry of data.transfers)card.append(transferCard(entry));
  result.append(found,card);conversation.append(result);return result;
 }
-async function choosePerson(match,choices){
+async function choosePerson(match,choices=null){
  setBusy(true);
- const buttons=choices.querySelectorAll('button');buttons.forEach(button=>button.disabled=true);
+ const buttons=choices?.querySelectorAll('button')||[];buttons.forEach(button=>button.disabled=true);
  const loading=typing();
  try{
   const data=await api('/api/transfer',{id:match.id,query:currentQuery});
-  loading.remove();setMode(data.mode);choices.remove();row('user',readableName(match.name));
+  loading.remove();setMode(data.mode);choices?.remove();
   const result=showResult(data);form.hidden=true;again.hidden=false;
   if(matchMedia('(max-width: 799px)').matches)result.scrollIntoView({behavior:'smooth',block:'start'});else scrollLatest();
  }catch(error){loading.remove();row('assistant',error.message||'Transfer information is temporarily unavailable.',true);buttons.forEach(button=>button.disabled=false);scrollLatest();}finally{setBusy(false);}
 }
 function showChoices(matches){
- row('assistant',matches.length===1?'I found your name. Tap below to see your transfer.':'Please select your name to see your transfer.');
+ row('assistant','Please select your name to see your transfer.');
  const choices=element('div','name-choices');choices.setAttribute('aria-label','Select your name');
  for(const match of matches){
   const button=element('button','name-choice');button.type='button';button.append(element('span',null,readableName(match.name)),element('span','choice-arrow','→'));
@@ -81,7 +81,8 @@ form.addEventListener('submit',async event=>{
  try{
   const data=await api('/api/search',{query});loading.remove();setMode(data.mode);
   if(data.refine)row('assistant','Please enter both your first and last name to narrow the search.');
-  else if(data.matches?.length)showChoices(data.matches);
+  else if(data.matches?.length===1)await choosePerson(data.matches[0]);
+  else if(data.matches?.length>1)showChoices(data.matches);
   else row('assistant','I couldn’t find that name. Please check the spelling used for your registration, or try your surname.',true);
  }catch(error){loading.remove();row('assistant',error.name==='AbortError'?'The search took too long. Please try again.':error.message,true);}
  finally{setBusy(false);scrollLatest();}

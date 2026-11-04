@@ -1,5 +1,7 @@
 # Find your transfer · Opio 2026
 
+MeetingPoint boşsa katılımcıya gösterilmez; Excel'de bilgi eklendiğinde görünür.
+
 Mevcut Find your group sitesinin gerçek CSS'i, logoları, Inter 600/700 ve Newsreader 500 yazı tipleri kullanıldı. Başlık ve sonuç kartları transfer bilgilerine uyarlandı.
 
 ## Paketin içeriği
@@ -38,7 +40,7 @@ Anahtarı `public/app.js` dosyasına veya GitHub'a yazma. Environment variable, 
 ## 4. Hızlı test
 
 1. `Ecenaz`, `Elma` veya `Ecenaz Elma` ara.
-2. İsim düğmesine tıkla.
+2. Tek eşleşmede transfer doğrudan açılır. Birden fazla isim eşleşirse kendi ismini seç.
 3. Sunday 8 November 2026, 15:32, Cannes railway station ve “No payment required” bilgilerini kontrol et.
 4. `Arturo` ara: şoföre ödeme ve expense claim notu çıkmalı.
 5. `Caroline Doyon` ara: “Private transfer · No payment required” çıkmalı.
