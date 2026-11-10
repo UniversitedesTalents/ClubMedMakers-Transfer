@@ -93,4 +93,57 @@ export async function readBody(request) {
   try{return JSON.parse(text);}catch{throw new Error('Request body must be valid JSON.');}
 }
 export function publicTransfer(record) {
-  const entry={date:record.Date,arrivalTime:record.ArrivalTime,arrivalLocation:record.ArrivalLocation,flightTrain:record.FlightTrain,meetingPoint:record.MeetingPoint,transferType:record.TransferType,paymentStatus:record.PaymentStatus,importantNote:paymentNote(record),needsReview:record.Status==='Needs review'};   
+  const entry={date:record.Date,arrivalTime:record.ArrivalTime,arrivalLocation:record.ArrivalLocation,flightTrain:record.FlightTrain,meetingPoint:record.MeetingPoint,transferType:record.TransferType,paymentStatus:record.PaymentStatus,importantNote:paymentNote(record),needsReview:record.Status==='Needs review'};
+  if(record.Direction==='Departure')return {...entry,direction:'Departure',pickupTime:record.PickupTime,departureTime:record.DepartureTime,dropoffLocation:record.DropoffLocation};
+  return {...entry,direction:'Arrival'};
+}
+function transferOrder(record) {
+  return record.Direction==='Departure'?`1${record.Date}${record.PickupTime}`:`0${record.Date}${record.ArrivalTime}`;
+}
+export function createHandlers({load,save,syncKey}) {
+  return {
+    async status(request) {
+      if(request.method!=='GET')return json({error:'Method not allowed.'},405);
+      try{const data=await load();return json({mode:data.mode,updatedAt:data.updatedAt});}
+      catch{return json({error:'Transfer information is temporarily unavailable.'},503);}
+    },
+    async search(request) {
+      if(request.method!=='POST')return json({error:'Method not allowed.'},405);
+      try{
+        const body=await readBody(request),query=String(body.query??'').trim();
+        if(normalizeName(query).length<2 || query.length>160)return json({error:'Please enter at least two letters of your first name or surname.'},400);
+        const data=await load(), names=[...new Set(data.records.filter(row=>nameMatches(row.FullName,query)).map(row=>row.FullName))];
+        if(names.length>15)return json({matches:[],refine:true,mode:data.mode});
+        return json({matches:names.map(name=>({id:personId(name),name})),mode:data.mode});
+      }catch(error){if(error.message.includes('JSON')||error.message.includes('large'))return json({error:error.message},400);return json({error:'The search is temporarily unavailable. Please try again.'},503);}
+    },
+    async transfer(request) {
+      if(request.method!=='POST')return json({error:'Method not allowed.'},405);
+      try{
+        const {id,query}=await readBody(request);
+        if(typeof query!=='string'||normalizeName(query).length<2||query.length>160||typeof id!=='string')return json({error:'Please search for your name again.'},400);
+        const data=await load(), matches=data.records.filter(row=>personId(row.FullName)===id && nameMatches(row.FullName,query));
+        if(!matches.length)return json({error:'No transfer found. Please search again.'},404);
+        return json({name:matches[0].FullName,mode:data.mode,transfers:matches.sort((a,b)=>transferOrder(a).localeCompare(transferOrder(b))).map(publicTransfer)});
+      }catch{return json({error:'Transfer information is temporarily unavailable. Please try again.'},503);}
+    },
+    async sync(request) {
+      if(request.method!=='POST')return json({error:'Method not allowed.'},405);
+      const expected=typeof syncKey==='function'?syncKey():syncKey;
+      if(!expected)return json({error:'Sync key has not been configured on the server.'},503);
+      if(!hasValidKey(request.headers.get('x-sync-key'),expected))return json({error:'Unauthorised.'},401);
+      let records,mode;
+      try{
+        const body=await readBody(request);
+        records=validateRows(Array.isArray(body)?body:body.rows??body.value);
+        mode=Array.isArray(body)?'test':body.mode??'test';
+        if(!['test','live'].includes(mode))throw new Error('Mode must be test or live.');
+      }catch(error){return json({error:error.message},400);}
+      try{
+        const updatedAt=new Date().toISOString();
+        await save({records,mode,updatedAt});
+        return json({ok:true,count:records.length,mode,updatedAt});
+      }catch{return json({error:'Sync could not be saved. Previous data has been retained.'},503);}
+    }
+  };
+}
