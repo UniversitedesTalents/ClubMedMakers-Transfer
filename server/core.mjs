@@ -93,4 +93,4 @@ export async function readBody(request) {
   try{return JSON.parse(text);}catch{throw new Error('Request body must be valid JSON.');}
 }
 export function publicTransfer(record) {
-  const entry={date:record.Date,arrivalTime:record.ArrivalTime,arrivalLocation:record.ArrivalLocation,flightTrain:record.FlightTrain,meetingPoint:record.MeetingPoint,transferType:record.TransferType,paymentStatus:record.PaymentStatus,importantNote:paymentNote(record),needsReview:record.Status==='Needs review'};
+  const entry={date:record.Date,arrivalTime:record.ArrivalTime,arrivalLocation:record.ArrivalLocation,flightTrain:record.FlightTrain,meetingPoint:record.MeetingPoint,transferType:record.TransferType,paymentStatus:record.PaymentStatus,importantNote:paymentNote(record),needsReview:record.Status==='Needs review'};   
