@@ -33,3 +33,4 @@ again.addEventListener('click',()=>{
 });
 fetch('/api/status',{cache:'no-store'}).then(response=>response.ok?response.json():null).then(data=>{if(data)setMode(data.mode);}).catch(()=>{});
 
+
