@@ -46,6 +46,7 @@ export function parseTime(value) {
     return `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
   }
   const str=String(value).trim();
+    if (!str) return '';
   const match=str.match(/^(\d{1,2})(?::(\d{2})(?::\d{2})?|h(\d{2}))$/i);
   const minutes=match?.[2]??match?.[3];
   if(!match || Number(match[1])>23 || Number(minutes)>59)throw new Error('Time must use HH:MM.');
