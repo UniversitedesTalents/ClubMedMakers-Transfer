@@ -38,19 +38,22 @@ export function parseDate(value) {
   return iso;
 }
 export function parseTime(value) {
-  if (value === null || value === undefined || value === '') return '';
-  if (typeof value === 'number' || /^0\.\d+$/.test(String(value))) {
-    const n = Number(value);
+  const str = String(value ?? '').trim();
+  if (!str) return '';
+
+  if (typeof value === 'number' || /^0(?:\.\d+)?$/.test(str)) {
+    const n = Number(str);
     if (n < 0 || n >= 1) throw new Error('Invalid Excel time.');
-    const m = Math.round(n*1440)%1440;
-    return `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
+    const m = Math.round(n * 1440) % 1440;
+    return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
   }
-  const str=String(value).trim();
-    if (!str) return '';
-  const match=str.match(/^(\d{1,2})(?::(\d{2})(?::\d{2})?|h(\d{2}))$/i);
-  const minutes=match?.[2]??match?.[3];
-  if(!match || Number(match[1])>23 || Number(minutes)>59)throw new Error('Time must use HH:MM.');
-  return `${match[1].padStart(2,'0')}:${minutes}`;
+
+  const match = str.match(/^(\d{1,2})(?:[:h.])(\d{2})(?::\d{2})?$/i);
+  if (!match || Number(match[1]) > 23 || Number(match[2]) > 59) {
+    throw new Error(`Time must use HH:MM. Received ${JSON.stringify(str.slice(0, 32))}.`);
+  }
+
+  return `${match[1].padStart(2, '0')}:${match[2]}`;
 }
 export function paymentNote(row) {
   if(row.PaymentStatus===payments.driver) return 'Your transfer is booked. Please pay the driver directly and keep your receipt to submit an expense claim. Have a pleasant journey!';
