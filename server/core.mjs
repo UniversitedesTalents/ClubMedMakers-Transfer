@@ -39,7 +39,7 @@ export function parseDate(value) {
 }
 export function parseTime(value) {
   const str = String(value ?? '').trim();
-  if (!str) return '';
+  if (!str || /^TBC$/i.test(str)) return '';
 
   if (typeof value === 'number' || /^0(?:\.\d+)?$/.test(str)) {
     const n = Number(str);
